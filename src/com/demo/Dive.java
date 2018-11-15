@@ -22,8 +22,9 @@ public class Dive
 	    		{
 	    			Parse parse = new Parse();
 	    			Connect connect = new Connect();
-					List<String> pagelinks = parse.parseHtml(connect.connectToURL(new URL(s))).stream().filter(x->x.contains(Main.DOMAIN)).distinct().collect(Collectors.toList());
-				    Main.pageMap.put(s, pagelinks);
+					List<String> pageLinks = parse.parseHtml(connect.connectToURL(new URL(s))).stream().filter(x->x.contains(Main.DOMAIN)).distinct().collect(Collectors.toList());
+				    Main.pageMap.put(s, pageLinks);
+				    new Dive().urlDive(pageLinks);
 				}
 	    		catch (MalformedURLException e) 
 	    		{
