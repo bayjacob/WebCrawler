@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.demo.connect.Connect;
@@ -14,13 +16,13 @@ import com.demo.parse.Parse;
 
 public class Main {
 	
-	private static final String DOMAIN = "https://wiprodigital.com";
+	static final String DOMAIN = "https://wiprodigital.com";
 	private static final String START_PAGE = "/";
 	
 	//This map will contain the page and resulting links
-	static HashMap<String, List<String>> pageMap = new HashMap<String, List<String>>();
+	static ConcurrentHashMap<String, List<String>> pageMap = new ConcurrentHashMap<String, List<String>>();
 	//List of all pages for tracking
-	static List<String> masterList = new ArrayList<String>();
+	static List<String> masterList = Collections.synchronizedList(new ArrayList<String>());
 	public static void main(String[] args) throws DemoExeception
 	{
 		Integer step = 0;
@@ -49,27 +51,14 @@ public class Main {
 	    
 	    step = step + 1;
 	    
-	    domainLinks.stream().forEach(s -> 
-	    {
-	    	if(!masterList.contains(s))
-	    	{
-	    		masterList.add(s);
-	    		try 
-	    		{
-					List<String> pagelinks = parse.parseHtml(start.connectToURL(new URL(s))).stream().filter(x->x.contains(DOMAIN)).distinct().collect(Collectors.toList());
-				    pageMap.put(s, pagelinks);
-				}
-	    		catch (MalformedURLException e) 
-	    		{
-					e.printStackTrace();
-				}
-	    		catch (DemoExeception e) 
-	    		{
-					e.printStackTrace();
-				}
-	    	}
-	    });
+	    //---------------Start Dive-------------//
 	    
+	    Dive firstDive = new Dive();
+	    firstDive.urlDive(domainLinks);
+	    
+	    //----------------End Dive----------------//
+	    
+	    //----------------Print------------------//
 	    pageMap.forEach((k,v)->
 	    {
 	    	System.out.println(k);
