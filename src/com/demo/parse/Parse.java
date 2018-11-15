@@ -25,7 +25,6 @@ public class Parse {
 	           {
 	               if(t == HTML.Tag.A) 
 	               {
-	            	   System.out.println(a);
 	                   Object link = a.getAttribute(HTML.Attribute.HREF);
 	                   if(link != null) 
 	                   {
