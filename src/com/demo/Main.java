@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.demo.connect.Connect;
+import com.demo.exceptions.DemoExeception;
 import com.demo.parse.Parse;
 
 public class Main {
@@ -20,52 +21,57 @@ public class Main {
 	static HashMap<String, List<String>> pageMap = new HashMap<String, List<String>>();
 	//List of all pages for tracking
 	static List<String> masterList = new ArrayList<String>();
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws DemoExeception
 	{
 		Integer step = 0;
-//		System.out.println("Hello World");
-		URL url = new URL(DOMAIN + START_PAGE);
+		URL url;
+		try 
+		{
+			url = new URL(DOMAIN + START_PAGE);
+		}
+		catch (MalformedURLException e2) 
+		{
+			throw new DemoExeception(e2.getMessage());
+		}
+		
 		Connect start = new Connect();
 		Parse parse = new Parse();
 		
 		//Start by getting first step, and parsing links.
-		List<String> links = parse.parseHtml(start.Connect(url));
+		List<String> links = new ArrayList();
+		links = parse.parseHtml(start.connectToURL(url));
 		
 	    //get distinct links that are part of the domain.
 	    List<String> domainLinks = links.stream().filter(x->x.contains(DOMAIN)).distinct().collect(Collectors.toList());
-//	    domainLinks.stream().forEach(x->System.out.println(x));
 	
 	    //add to tracking maps
 	    pageMap.put(START_PAGE, domainLinks);
+	    
 	    step = step + 1;
 	    
-//	    System.out.println("-----------------------------------");
-	    domainLinks.stream().forEach(s -> {
+	    domainLinks.stream().forEach(s -> 
+	    {
 	    	if(!masterList.contains(s))
 	    	{
 	    		masterList.add(s);
 	    		try 
 	    		{
-					List<String> pagelinks = parse.parseHtml(start.Connect(new URL(s))).stream().filter(x->x.contains(DOMAIN)).distinct().collect(Collectors.toList());
+					List<String> pagelinks = parse.parseHtml(start.connectToURL(new URL(s))).stream().filter(x->x.contains(DOMAIN)).distinct().collect(Collectors.toList());
 				    pageMap.put(s, pagelinks);
-//					pagelinks.stream().forEach(x->System.out.println(x));
-//					System.out.println("-----------------------------------");
 				}
 	    		catch (MalformedURLException e) 
 	    		{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    		catch (IOException e) 
+	    		catch (DemoExeception e) 
 	    		{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    	}
 	    });
 	    
-	    if(false);
-	    pageMap.forEach((k,v)->{
+	    pageMap.forEach((k,v)->
+	    {
 	    	System.out.println(k);
 	    	v.forEach(s->
 	    	{
