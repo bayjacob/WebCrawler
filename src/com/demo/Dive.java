@@ -17,6 +17,11 @@ public class Dive implements Runnable
 	{
 		this.urls = urls;
 	}
+	
+	public boolean doRecursion()
+	{
+		return true;
+	}
 
 	@Override
 	public void run() 
@@ -44,7 +49,9 @@ public class Dive implements Runnable
 
 					System.out.println(s + ":" + pageLinks.size());
 				    Main.pageMap.put(s, pageLinks);
-				    new Dive(pageLinks).run();
+				    
+				    if(doRecursion())
+				    	new Dive(pageLinks).run();
 				}
 	    		catch (MalformedURLException e) 
 	    		{

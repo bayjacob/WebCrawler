@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Direct Colorado</title>
+	<link rel="shortcut icon" href="favicon.ico?" type="image">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link href="style.css" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js_functions.js"></script>
+    <script>
+		var calledFB = false;
+		 function statusChangeCallback(response)
+		 {
+			console.log('statusChangeCallback');
+			console.log(response);
+			if (response.status === 'connected')
+			{
+				console.log(response);
+				console.log("logged in");
+
+				var accessToken = response.authResponse.accessToken;
+				fbLogon(accessToken);
+			}
+			else
+			{
+				console.log("not logged in");
+			}
+		}
+
+		function checkLoginState()
+		{
+			FB.getLoginStatus(function(response)
+			{
+			  statusChangeCallback(response);
+			});
+		}
+
+		window.fbAsyncInit = function()
+				{
+				FB.init({
+				  appId      : '166950307388812',
+				  cookie     : true,
+				  xfbml      : true,
+				  version    : 'v2.11'
+			 	});
+
+			}
+		function fbLogin()
+		{
+			FB.login(function(response)
+			{
+				statusChangeCallback(response);
+			}, {scope: 'email'});
+//			window.location.href='index.php';
+		}
+
+		function fbLogout()
+		{
+			FB.logout(function(response) {});
+			window.location.href='logout.php?facebook=true';
+		}
+
+
+		function fbLogon(token)
+		 {
+			console.log('Welcome!  Fetching your information.... ');
+			FB.api('/me?fields=id,name,email,first_name,last_name,location', function(response)
+			{
+				console.log(response);
+				window.location.href = "".concat("facebookLogon.php?firstname=",response.first_name,"&lastname=",response.last_name,"&email=",response.email,"&id=",response.id,"&token=",token);
+			});
+		}
+
+		(function(d, s, id)
+		{
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		 }(document, 'script', 'facebook-jssdk'));
+	</script>
+</head>
+<body>
+	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="loginModal">
+	<div class="modal-dialog modal-sm" role="document">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        	<h4 class="modal-title" id="myModalLabel">Login</h4>
+	      	</div>
+	      	<div class="modal-body">
+		        <form id="loginform" role="form" action="login.php" method="post">
+                
+					<fieldset class="form-group">
+						<label>Username</label>
+						<input type="text" class="form-control" name="username" value="">
+					</fieldset>
+					<fieldset class="form-group">
+						<label>Password</label>
+						<input type="password" class="form-control" name="password" autocomplete="new-password" value="">
+                        <p class="text-center"><a href="passwordReset.html">Forgot Password?</a></p>
+					</fieldset>	
+					<fieldset class="form-group">
+						<input type="submit" class="btn btn-ltblue" name="login" value="LOGIN">
+					</fieldset> 
+				</form>
+	      	</div>
+	    </div>
+  	</div>
+</div>
+<div class="modal fade" id="signup-modal" tabindex="-1" role="dialog" aria-labelledby="signupModal">
+	<div class="modal-dialog modal-sm" role="document">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        	<h4 class="modal-title" id="myModalLabel">Sign up</h4>
+	      	</div>
+	    </div>
+  	</div>
+</div><div class="container-fluid">
+        <nav class="navbar">
+                <a href="index.php" class="navbar-brand"><img src="img/logo-2.png" alt="logo" /></a>
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="calendar.php">Calendar</a></li>
+                        <li><a href="browse.php">Browse</a></li><li><a href="#" data-toggle="modal" data-target="#login-modal">Create Initiative</a></li>
+<li><a href="about.php">About</a></li>
+<li><a href="signup.php">Sign up</a></li>
+<li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li></ul>
+</nav>
+</div>	<div class="jumbotron">
+		<div class="container text-center">
+			<h1 class="jumbotron-main-headline">The People's Law: no politicians required</h1>
+			<form id = "searchForm" action="initiativeResults.php" method="get">
+				<h3 class="jumbotron-sub-headline">Search a topic to find related initiatives to vote on:</h3>
+                                <input type="hidden" name="searchType" value="search">
+				<input class="jumbotron-search-input" type="text" name="searchString" placeholder="Search">
+                                <button class="btn btn-transparent"><i class="glyphicon glyphicon-search search-icon-white"></i></button>
+			</form>
+			<a class="jumbotron-link link" href="about.php">About Us</a>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row row-white">
+			<div class="col-md-2"></div>
+			<div class="col-md-4 col-sm-6">
+				<h4>Wish it was easier to learn about initiatives?</h4>
+				<ul>
+					<li>Quickly browse initiatives for topics that you care about</li>
+					<li>Like initiatives online to pledge to sign them later</li>
+					<li>Participate in forums to discuss initiatives</li>
+				</ul>
+			</div>
+			<div class="col-md-4 col-sm-6">
+				<h4>Have an idea for a ballot initiative?</h4>
+				<ul>
+					<li>Easily create an initiative online</li>
+					<li>Gather signers electronically</li>
+					<li>Track voting and comments on your initiative</li>
+				</ul>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+
+				<div class="row row-color">
+			<div class="col-md-4 col-sm-2"></div>
+			<div class="col-md-4 col-sm-8">
+                            <p class="text-center">
+<!--                 <span class="fb-login-button text-center" style="padding-left:60px" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="true" data-auto-logout-link="false" data-use-continue-as="true"></span-->
+               </p>
+				<a href="signup.php"><h2 class="text-center">Sign up</h2></a>
+				<p class="text-center">
+                	Already have an account? <a href="#" class="link" data-toggle="modal" data-target="#login-modal">Login</a><br/><br/>
+                   <fb:login-button scope="public_profile,email" onlogin="fbLogin();" size="large">Login With Facebook</fb:login-button><br/>
+                   <span class="text-center" style="padding-left:110px"><fb:login-button show-faces="true" scope="public_profile,email" onlogin="fbLogin();" size="large">Login With Facebook</fb:login-button></span>
+                </p>
+                <p class="text-center"><a href="passwordReset.html">Forgot Password? </a></p>
+                    <br/>
+			</div>
+			<div class="col-md-4 col-sm-2"></div>
+		</div>
+        	</div>
+
+	</body>
+</html>
