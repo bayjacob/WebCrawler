@@ -11,8 +11,8 @@ import com.demo.exceptions.DemoExeception;
 
 public class Main {
 	
-//	public static String DOMAIN = "https://wiprodigital.com/";
-	public static String DOMAIN = "https://aol.com/"; //lots of broken links
+	public static String DOMAIN = "https://wiprodigital.com/";
+//	public static String DOMAIN = "https://aol.com/"; //lots of broken links
 //	public static String DOMAIN = "https://directcolorado.org/";
 
 	//This map will contain the page and resulting links
