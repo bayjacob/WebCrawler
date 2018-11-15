@@ -4,34 +4,55 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.demo.exceptions.DemoExeception;
 import com.demo.exceptions.NotFoundException;
 
-class ParseTest {
-
-	//Would have used before and before class, but wasnt working.
-
-	@Test
-	void setupConfirm() throws DemoExeception, NotFoundException 
+public class ParseTest 
+{
+	static String body;
+	Parse sut;
+	
+	@BeforeClass
+	public static void LoadFile()
 	{
-		String body = null;
-		Parse sut = new Parse();
-		try {
+		try 
+		{
 			body = IOUtils.toString(
-				      this.getClass().getResourceAsStream("parseTest.html"),
+				      ParseTest.class.getResourceAsStream("parseTest.html"),
 				      "UTF-8");
-		} catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
-		assert(body != null);
-
-		List<String> returned = sut.parseHtml(body);
-		System.out.println(returned.size());
-		assert(true);
 	}
 	
+	@Before
+	public void setup()
+	{
+		sut = new Parse();
+	}
 	
-
+	@Test
+	public void setupConfirm() 
+	{
+		assert(ParseTest.body != null);
+	}
+	
+	@Test
+	public void parse() throws DemoExeception, NotFoundException 
+	{
+		sut.parseHtml(ParseTest.body);
+	}
+	
+	@Test
+	public void linkTest() throws DemoExeception, NotFoundException 
+	{
+		List<String> returned = sut.parseHtml(ParseTest.body);
+		assert(returned.size() == 12);
+	}
 }

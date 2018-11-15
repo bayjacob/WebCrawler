@@ -11,14 +11,14 @@ import com.demo.exceptions.DemoExeception;
 
 public class Main {
 	
-//	static final String DOMAIN = "https://wiprodigital.com/";
-//	static final String DOMAIN = "https://aol.com/"; -- lots of broken links
-	static final String DOMAIN = "https://directcolorado.org/";
+//	public static String DOMAIN = "https://wiprodigital.com/";
+	public static String DOMAIN = "https://aol.com/"; //lots of broken links
+//	public static String DOMAIN = "https://directcolorado.org/";
 
 	//This map will contain the page and resulting links
-	static ConcurrentHashMap<String, List<String>> pageMap = new ConcurrentHashMap<String, List<String>>();
+	public static ConcurrentHashMap<String, List<String>> pageMap = new ConcurrentHashMap<String, List<String>>();
 	//List of all pages for tracking
-	static List<String> masterList = Collections.synchronizedList(new ArrayList<String>());
+	public static List<String> masterList = Collections.synchronizedList(new ArrayList<String>());
 	
 	public static void main(String[] args) throws DemoExeception, MalformedURLException
 	{

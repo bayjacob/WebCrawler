@@ -1,14 +1,22 @@
 package com.demo.connect;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.fail;
 
-import org.junit.jupiter.api.Test;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-class ConnectTest {
+import org.junit.Test;
 
-	@Test
-	void test() {
-		fail("Not yet implemented");
+import com.demo.exceptions.DemoExeception;
+import com.demo.exceptions.NotFoundException;
+
+public class ConnectTest {
+
+	@Test(expected = NotFoundException.class) 
+	public void test404() throws MalformedURLException, DemoExeception, NotFoundException 
+	{
+		Connect sut = new Connect();
+		sut.connectToURL(new URL("https://www.aol.com/forgot/"));
+		fail("Exception should be thrown");
 	}
-
 }
