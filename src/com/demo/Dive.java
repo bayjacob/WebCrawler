@@ -7,11 +7,19 @@ import java.util.stream.Collectors;
 
 import com.demo.connect.Connect;
 import com.demo.exceptions.DemoExeception;
+import com.demo.exceptions.NotFoundException;
 import com.demo.parse.Parse;
 
-public class Dive 
+public class Dive implements Runnable
 {
-	public void urlDive (List<String> urls)
+	List<String> urls;
+	public Dive (List<String> urls)
+	{
+		this.urls = urls;
+	}
+
+	@Override
+	public void run() 
 	{
 		urls.stream().forEach(s -> 
 	    {
@@ -22,19 +30,39 @@ public class Dive
 	    		{
 	    			Parse parse = new Parse();
 	    			Connect connect = new Connect();
-					List<String> pageLinks = parse.parseHtml(connect.connectToURL(new URL(s))).stream().filter(x->x.contains(Main.DOMAIN)).distinct().collect(Collectors.toList());
+	    			String body;
+	    			if(!s.startsWith("http"))
+	    				body = connect.connectToURL(new URL(Main.DOMAIN + s));
+	    			else
+	    				body = connect.connectToURL(new URL(s));
+	    			
+					List<String> pageLinks = parse.parseHtml(body)
+							.stream()
+							.filter(x->(x.contains(Main.DOMAIN) || !x.startsWith("http")))
+							.distinct()
+							.collect(Collectors.toList());
+
+					System.out.println(s + ":" + pageLinks.size());
 				    Main.pageMap.put(s, pageLinks);
-				    new Dive().urlDive(pageLinks);
+				    new Dive(pageLinks).run();
 				}
 	    		catch (MalformedURLException e) 
 	    		{
-					e.printStackTrace();
+	    			System.out.println("Bad URL found while diving:" + e.getMessage());
+	    			 return;
+				}
+	    		catch (NotFoundException e) 
+	    		{
+	    			System.out.println("404 found while diving:" + e.getMessage());
+	    			 return;
 				}
 	    		catch (DemoExeception e) 
 	    		{
-					e.printStackTrace();
+	    			System.out.println("Demo Exception while diving: " + e.getMessage());
+	    			 return;
 				}
 	    	}
 	    });
+		
 	}
 }

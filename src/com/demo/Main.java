@@ -1,22 +1,20 @@
 package com.demo;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
-import com.demo.connect.Connect;
 import com.demo.exceptions.DemoExeception;
-import com.demo.parse.Parse;
 
 public class Main {
 	
-	static final String DOMAIN = "https://wiprodigital.com/";
-	
+//	static final String DOMAIN = "https://wiprodigital.com/";
+//	static final String DOMAIN = "https://aol.com/"; -- lots of broken links
+	static final String DOMAIN = "https://directcolorado.org/";
+
 	//This map will contain the page and resulting links
 	static ConcurrentHashMap<String, List<String>> pageMap = new ConcurrentHashMap<String, List<String>>();
 	//List of all pages for tracking
@@ -25,8 +23,7 @@ public class Main {
 	public static void main(String[] args) throws DemoExeception, MalformedURLException
 	{
 	    //---------------Start Dive-------------//
-	    Dive firstDive = new Dive();
-	    firstDive.urlDive(Arrays.asList(DOMAIN));
+	    new Dive(Arrays.asList(DOMAIN)).run();
 	    //----------------End Dive----------------//
 	    
 	    //----------------Print------------------//

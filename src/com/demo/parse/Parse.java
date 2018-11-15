@@ -1,5 +1,6 @@
 package com.demo.parse;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -12,10 +13,11 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.parser.ParserDelegator;
 
 import com.demo.exceptions.DemoExeception;
+import com.demo.exceptions.NotFoundException;
 
 public class Parse {
 
-	public List<String> parseHtml(String body) throws DemoExeception
+	public List<String> parseHtml(String body) throws DemoExeception, NotFoundException
 	{
 		Reader reader = new StringReader(body);
 		HTMLEditorKit.Parser parser = new ParserDelegator();
@@ -32,15 +34,22 @@ public class Parse {
 			               Object link = a.getAttribute(HTML.Attribute.HREF);
 			               if(link != null) 
 			               {
-			                   links.add(String.valueOf(link));
+			            	   String sLink = String.valueOf(link);
+			            	   System.out.println("found link: " + sLink);
+			                   links.add(sLink);
 			               }
 			           }
 			       }
 			}, true);
 		} 
-	    catch (IOException e) {
-			throw new DemoExeception(e.getMessage());
+	    catch (FileNotFoundException e) 
+	    {
+			throw new NotFoundException(e.getMessage());
 		}
+	    catch(IOException e)
+	    {
+	    	throw new DemoExeception(e.getMessage());
+	    }
 	    
 	   return links;
 	}
